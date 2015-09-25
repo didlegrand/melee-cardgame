@@ -8,12 +8,12 @@ package core
  * Les joueurs disposent de cartes représentant des combattants ou des objets.
  * 
  * Les cartes sont disposées sur le champ de bataille en 3 lignes: 1ère, 2ème et réserve.
- * Il y a 5 emplacements par ligne. Un emplacement ne peut contenir qu'une carte.
+ * Il y a 3 emplacements par ligne. Un emplacement ne peut contenir qu'une carte.
  * En 1ère et 2ème ligne, les cartes sont normalement face visible. 
  * En réserve, les cartes sont normalement face cachée.
  * Un joueur gagne si
  *  - un de ses combattants franchit les 3 lignes de l'adversaire ou
- *  - si son adversaire devrait piocher et ne peux pas. 
+ *  - si son adversaire devrait piocher et ne peux pas (plus de ressource). 
  * 
  * Disposition du jeu: chaque joueur a
  *  - une pile de pioche pour le recrutement ou l'achat de matériel
@@ -25,7 +25,7 @@ package core
  * A chaque tour, les joueurs jouent une succession de phases:
  * 	- recrutement (pioche)
  *  - mouvement (déplacement des combattants/objets)
- * 	- action (combat au corps à corps, capacités spéciales, utilisation des matériels
+ * 	- action (combat au corps à corps, capacités spéciales, utilisation des matériels)
  *  - récupération (les combattants en 2ème ligne reprennent des forces, les matériels qui le peuvent se rechargent).
  * 
  * Etat des combattants:
