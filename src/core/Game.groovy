@@ -87,9 +87,19 @@ package core
  *   - ils pourront avancer ou reculer pendant la phase "action" (charge ou retraite).
  *  
  * Phase d'action:
- * 
+ * 	Les joueurs posent des jetons action face cachée sur les cartes en ligne 1 et 2.
+ *  On ne peut normalement poser qu'un jeton par carte.
+ *  Les actions sont soit des actions de combat, soit des actions spéciales prévues sur la carte.
+ *  
+ *  Actions de combat:
+ *  - Attaque : inflige des blessures à l'adversaire en face (seulement de ligne 1 à ligne 1)
+ *  - Parade : se protège de l'attaque en face (seulement de ligne 1 à ligne 1)
+ *  - Charge : Attaque possible lorsque le combattant a enfoncé les lignes ennemies (attaque + mouvement vers l'avant si l'adversaire est KO).
+ *  - Retraite : recul possible depuis les lignes ennemies (d'une ligne).
  *  	
- * 
+ *  Actions spéciales:
+ *   - comme indiqué sur la carte.
+ *   
  * @author Legrand
  *
  */
