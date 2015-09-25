@@ -11,7 +11,9 @@ package core
  * Il y a 5 emplacements par ligne. Un emplacement ne peut contenir qu'une carte.
  * En 1ère et 2ème ligne, les cartes sont normalement face visible. 
  * En réserve, les cartes sont normalement face cachée.
- * Un joueur gagne si l'un de ses combattants franchit les 3 lignes.
+ * Un joueur gagne 
+ * - si l'un de ses combattants franchit les 3 lignes ou
+ * - si son adversaire devrait piocher et ne peux pas. 
  * 
  * Disposition du jeu: chaque joueur a
  *  - une pile de pioche pour le recrutement ou l'achat de matériel
