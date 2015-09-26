@@ -92,13 +92,27 @@ package core
  *  Les actions sont soit des actions de combat, soit des actions spéciales prévues sur la carte.
  *  
  *  Actions de combat:
- *  - Attaque : inflige des blessures à l'adversaire en face (seulement de ligne 1 à ligne 1)
- *  - Parade : se protège de l'attaque en face (seulement de ligne 1 à ligne 1)
- *  - Charge : Attaque possible lorsque le combattant a enfoncé les lignes ennemies (attaque + mouvement vers l'avant si l'adversaire est KO).
+ *  - Attaque : inflige des blessures à l'adversaire en face (seulement de ligne 1 à ligne 1). Coûte 1 Fatigue.
+ *  - Parade : se protège de l'attaque en face (seulement de ligne 1 à ligne 1). Coûte 1 Fatigue.
+ *  - Charge : Attaque possible lorsque le combattant a enfoncé les lignes ennemies 
+ *  	(attaque + mouvement vers l'avant si l'adversaire est KO).
+ *  	La charge coûte 2 points de Fatigue.
  *  - Retraite : recul possible depuis les lignes ennemies (d'une ligne).
  *  	
  *  Actions spéciales:
  *   - comme indiqué sur la carte.
+ *   - les actions spéciales sont repérées par un "S" suivi d'un numéro, ex "S1"
+ *   - Certaines actions fatiguent le combattant et comportent la mention "Fatigue X" où X est le nombre de points de fatigue à ajouter au compteur courant.
+ *   - exemples:
+ *   	"S1: Vol. Fatigue 1. Elèvez-vous dans les airs avec un cerf-volant. L'adversaire révéle les cartes de la ligne de réserve"
+ *   	"S1: Ravitaillement. Fatigue 1. Réduisez de 1 la fatigue du combattant devant vous."
+ *   	"S2: Soins. Fatigue 1. Réduisez de 2 la fatigue du combattant devant vous."
+ *   	"S1: Cannonade. Fatigue 2. Infligez 3 dégats à l'ennemi situé 2 lignes devant vous.
+ *   	"S2: Cannonade. Fatigue 2. Infligez 2 dégats à l'ennemi situé 3 lignes devant vous.
+ *   	"S1: Assassinat. Fatigue 5. Glissez vous sans être repéré dans les lignes ennemis et mettez hors-combat un combattant. Quittez le champ de bataille"  
+ *   	"S2: Sabotage. Fatigue 5. Glissez vous sans être repéré dans les lignes ennemis et détruisez un matériel. Quittez le champ de bataille"
+ *   	"S1: Réparation. Fatigue 1. Réparez le matériel devant vous: sa fatigue diminue de 1."
+ *   	
  *   
  * @author Legrand
  *
