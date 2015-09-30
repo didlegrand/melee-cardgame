@@ -87,7 +87,7 @@ package core
  *  	- la carte est mise dans la défausse. 
  *  
  *  Actions de combat:
- *  - Attaque : inflige des blessures à l'unité en face. TODO détailler 
+ *  - Attaque : inflige des blessures à l'unité en face. TODO détailler: prend sa place si l'unité attaquée meure ?
  *  - Défense : se protège de l'attaque en face. TODO détailler
  *  - exemples:
  *  	"A: En cas de combat: Fatigue 1. Inflige 3 blessures à l'unité ennemie d'en face"
