@@ -1,106 +1,101 @@
 package core
 
 /**
- * Game instance of a game being played
+ * Instance of a game being played
+ * 
+ * Rules:
  * 
  * 'Mélée'. Jeu de carte pour 2 joueurs de type 'duel'.
  * 
- * Le jeu représente l'affrontement de 2 généraux incarnés par les joueurs. 
- * Les joueurs disposent de cartes représentant des combattants ou des objets.
+ * Le jeu représente l'affrontement de 2 généraux incarnés par les joueurs.
  * 
- * Les cartes sont disposées sur le champ de bataille sur 3 lignes.
- * Les combattants en 1ère ligne sont au contact des combattants de la 1ère ligne adverse.
- * Il y a 3 emplacements par ligne (ou 4 ou 5 ???). 
- * Un emplacement ne peut contenir qu'une carte.
- * En 1ère et 2ème ligne, les cartes sont normalement face visible. 
- * En réserve, les cartes sont normalement face cachée.
- * Un joueur gagne si
- *  - un de ses combattants franchit les 3 lignes de l'adversaire ou
- *  - si l'adversaire devrait piocher mais ne peux pas (plus de ressource). 
+ * Les joueurs disposent 
+ * - de cartes représentant des unités combattantes,
+ * - de jetons à poser représentant des intentions d'action.
  * 
- * Chaque joueur a devant lui
- *  - une pile de pioche, pour le recrutement ou l'achat de matériel.
- *  - des cartes en main, obtenues par la pioche.
- *  - des jetons d'intention (une face pour le type d'action dite 'face cachée', une face pour l'action dite 'face visible')
- *  - 3 lignes de champ de bataille notées
- *  	- "1" pour la 1ère ligne
- *  	- "2" pour la 2ème ligne
- *  	- "R" pour la ligne de réserve.
- *  - une pile des cartes "hors combat" (combattants KO, objets cassés, cartes défaussées...)
+ * Les 2 joueurs jouent en même temps.
+ * Ils posent des jetons phase cachée sur les cartes pour indiquer l'action ou le déplacement à réaliser.
+ * Lorsqu'aucun joueur ne souhaite plus poser de jeton, on retourne tous les jetons pour résoudre les actions.
+ * Une action aboutissant à une situation illégale est annulée.
+ *   
+ * En cours de partie, les cartes se trouvent soit
+ * - dans un camp ou sur le champ de bataille
+ * - dans une pile de pioche (recrutement)
+ * - dans la main du joueur (réserves)
+ * - dans un cimetière.
+ * 
+ * Chaque joueur a devant lui une ligne de 5 emplacements qui représente son camp.
+ * Devant le camp, se trouve une autre ligne de 5 emplacements qui représente sa moitié du champ de bataille.
+ * En face se trouve la ligne qui représente la moitié du champ de bataille de l'adversaire.
+ * Derrière se trouve le camp de l'adversaire.
+ * Il y a donc 4 x 5 = 20 emplacements sur la table, un emplacement ne pouvant contenir qu'une carte.
+ * 
+ * Sur le champ de bataille, les cartes sont posées face visible.
+ * Dans les camps, les cartes sont posées face cachée (l'adversaire ne les connait pas).
+ * 
+ * Un joueur gagne si une de ses unités se trouve dans le camp adverse en fin de tour.
  * 
  * A chaque tour, les joueurs jouent une succession de phases:
  * 	- recrutement (pioche)
  *  - mouvement (déplacement des combattants/objets)
  * 	- action (combat au corps à corps, capacités spéciales, utilisation des matériels)
- *  - récupération (les combattants en 2ème ligne reprennent des forces, les matériels qui le peuvent se rechargent).
- *  
- * Les joueurs ne jouent pas l'un après l'autre mais en même temps:
- *  - les intentions d'actions (mouvements, attaques...) sont matérialisées par des jetons posés face cachée.
- *  - une fois que les joueurs ne veulent plus poser de jeton, les jetons sont révélés et les actions sont résolues simultanément.
- * Une action aboutissant à une situation illégale est annulée.
+ *  - fin de tour (et éventuellement fin de partie).
  *  
  * L'état des combattants ou des matériels varie pendant le tour:
- *  - santé: diminue avec les coups reçus (= 0 -> hors combat)
- *  - fatigue: augmente avec les coups portés ou les capacités utilisées (= max -> état "épuisé")
+ *  - santé: diminue avec les coups reçus ou avec la fatigue (= 0 -> hors combat)
  *  - force : mesure l'intensité des coups portés.
  *  - armure : vient en réduction des coups reçus.
  *  
  * Phase de pioche:
- *  - les joueurs piochent une carte
- *  - ils peuvent choisir d'en piocher une 2ème mais devront en placer une des 2 sous la pile de pioche en fin de phase.
- *  - ils peuvent choisir d'en piocher une 3ème mais devront en plus en jeter une des 3 dans la défausse en fin de phase.
+ *  - Chaque joueur pioche une, deux ou trois cartes.
+ *  - S'il a choisi de piocher 2 cartes, il en choisit une qu'il place sous la pile et met l'autre dans sa main.
+ *  - S'il a choisi de piocher 3 cartes, il en place une sous la pile, s'en défausse d'une et met la dernière dans sa main.
  *  
  * Phase de mouvement:
- *  - les mouvements concernent 
- *  	- les combattants ou les matériels sur le champ de bataille.
- *  	- les cartes en main qui peuvent arriver face cachée sur la ligne de réserve.
- *  - les mouvements se font vers l'avant, l'arrière, la gauche ou la droite mais pas en diagonale.
- *  - il n'est pas possible de faire reculer un objet de la ligne de réserve.
+ *  - pendant cette phase, les unités peuvent
+ *  	- arriver dans le camp face cachée depuis la réserve (la main) pour occuper des emplacements vides
+ *   	- avancer ou reculer d'une ligne à l'autre (camp -> champ de bataille -> camp)
+ *   	- échanger leur place avec une autre unité amie située devant, derrière, à gauche ou à droite
+ *   	- se déplacer à gauche ou à droite sur la même ligne.
+ * 
+ *  - en début de phase, les joueurs placent des jetons mouvement face cachée qui représentent l'ordre de mouvement.
+ *  - lorsqu'aucun joueur ne souhaite plus poser de jeton mouvement, on révèle tous les ordres de mouvement.
+ *  - les mouvements sont exécutés 
+ *  	- de gauche à droite sur les champ de bataille puis
+ *  	- de gauche à droite dans les camps puis
+ *  	- en faisant rentrer les unités de réserve dans les camps.
+ *  - si un mouvement devait aboutir à une situation illégale, typiquement 2 cartes sur le même emplacement
+ *    ou une carte hors limite, ce mouvement est annulé.
+ *  - les jetons sont enlevés lorsque le mouvement est réalisé ou annulé.
  *  
- *  - un objet en mouvement peut 
- *  	- aller vers un emplacement vide 
- *  	- échanger sa place avec un autre objet, par exemple un combattant de 1ère ligne échange sa place avec le combattant de 2ème ligne derrière lui).
- *  
- *  - les mouvements autorisés sont donc
- *  	- en avant: de réserve en 2ème ligne ou de 2ème ligne en 1ère ligne.
- *  	- en arrière : de la 1ère ligne à la 2ème ligne (pas de retour en réserve)
- *  	- à droite ou à gauche en restant sur la même ligne
- *  	- depuis la main vers la ligne de réserve face cachée.
- *  
- *   Chaque intention de mouvement se matérialise par un jeton posé face caché sur l'objet à déplacer.
+ *   Notes:
+ *   	- Il est possible - et recommandé - de tromper l'adversaire en posant un jeton "sans mouvement" sur les objets qu'on n'a pas l'intention de déplacer.
+ *   	- Tant qu'un joueur pose des jetons, son adversaire peut en poser aussi.
+ *   	- Sauf mention contraire, on ne pose qu'un jeton mouvement par carte.
+ *   	- On ne peut pas enlever ou changer un jeton posé.
  *   
- *   Il est possible - et recommandé - de tromper l'adversaire en posant un jeton "sans mouvement" sur les objets qu'on n'a pas l'intention de déplacer.
- *   Tant qu'un joueur pose des jetons, son adversaire peut en poser aussi.
- *   
- *   On ne pose qu'un jeton mouvement par carte.
- *   Il est interdit d'enlever ou de changer un jeton posé.
- *   
- *   Lorsque les 2 joueurs conviennent qu'ils ont fini de poser leurs jetons, on révèle les jetons en les retournant.
- *   Les mouvement sont exécutés de gauche à droite, de la 1ère ligne à la réserve.
- *   Les entrées en réserve depuis la main sont jouées en dernier, toujours de gauche à droite.
- *   Si un mouvement est illégal, il est annulé.
- *   Les jetons mouvement sont enlevés.
- *   
- *   Cas des lignes enfoncées:
- *   - une ligne est enfoncée lorsque des combattants ennemis sont présents sur une des lignes d'un joueur.
- *   - ces combattants ne se déplacent pas d'une ligne à l'autre pendant la phase de mouvement.
- *   - ils pourront avancer ou reculer pendant la phase "action" (charge ou retraite).
- *  
  * Phase d'action:
- * 	Les joueurs posent des jetons action face cachée sur les cartes en ligne 1 et 2.
- *  On ne peut normalement poser qu'un jeton par carte.
- *  Les actions sont soit des actions de combat, soit des actions spéciales prévues sur la carte.
+ * 	- Les joueurs posent des jetons action face cachée sur les unités du champ de bataille et dans les camps.
+ *  - Sauf mention contraire, on ne peut poser qu'un jeton par carte.
+ *  - Les actions sont soit des actions de combat, soit des actions spéciales prévues sur la carte.
+ *  - Dès lors qu'aucun joueur ne souhaite plus poser de jeton action, 
+ *  	1) on révèle les jetons action
+ *  	2) on exécute les actions dans le même ordre que pour les déplacements (de gauche à droite, champs de bataille puis camp)
+ *  - A tout moment un joueur peut jouer un coup fourré (pas besoin de jeton d'action):
+ *  	- il révèle la carte si elle est face cachée,
+ *  	- il joue l'action prévue
+ *  	- la carte est mise dans la défausse. 
  *  
  *  Actions de combat:
- *  - Attaque : inflige des blessures à l'adversaire en face (seulement de ligne 1 à ligne 1). Coûte 1 Fatigue.
- *  - Parade : se protège de l'attaque en face (seulement de ligne 1 à ligne 1). Coûte 1 Fatigue.
- *  - Charge : Attaque possible lorsque le combattant a enfoncé les lignes ennemies 
- *  	(attaque + mouvement vers l'avant si l'adversaire est KO).
- *  	La charge coûte 2 points de Fatigue.
- *  - Retraite : recul possible depuis les lignes ennemies (d'une ligne).
+ *  - Attaque : inflige des blessures à l'unité en face. TODO détailler 
+ *  - Défense : se protège de l'attaque en face. TODO détailler
+ *  - exemples:
+ *  	"A: En cas de combat: Fatigue 1. Inflige 3 blessures à l'unité ennemie d'en face"
+ *  	"D: En cas de combat: Fatigue 1. Prévient 3 blessures de combat"
+ *  	"A: En cas de combat: Fatigue 3. Inflige 6 blessures à l'unité ennemie d'en face"
  *  	
  *  Actions spéciales:
- *   - comme indiqué sur la carte.
+ *   - Les actions spéciales sont indiquées sur la carte.
  *   - les actions spéciales sont repérées par un "S" suivi d'un numéro, ex "S1"
  *   - Certaines actions fatiguent le combattant et comportent la mention "Fatigue X" où X est le nombre de points de fatigue à ajouter au compteur courant.
  *   - exemples:
@@ -117,13 +112,13 @@ package core
  *      "S1: Terreur. Fatigue 1. L'unité ennemie devant vous ne peut faire aucune action de combat ou action spéciale jusqu'à la fin du tour. 
  *      
  *   Actions automatiques: il s'agit d'action qui ne sont pas déclenchées par le joueur mais par un évènement.
- *      "Mine. Lorsqu'une unité attaque la mine, elle lui inflige 5 dégats et se détruit en même temps."
+ *      "Mine. Lorsqu'une unité attaque la mine, la mine lui inflige 5 dégats et se détruit en même temps."
  *      "Lunette. Lorsque l'adversaire pose une unité de réserve en face de la lunette, révélez-là".
  *            
  *   Coup-fourrés: 
+ *      "Urgence. Révélez cette carte: Lorsqu'une unité devrait être détruite, vous pouvez la sauver et lui redonner sa santé maximum. Détruisez cette carte".
  *      "Fumigène. Révèlez cette carte: les unités amies qui parent au combat ne reçoivent pas de blessure ce tour-ci et ne se fatiguent pas. Détruisez cette carte."
  *      "Incendie. Révèlez cette carte: Les matériels en bois sont détruits. Détruisez cette carte"
- *      "Foudre. Révèlez cette carte: Les matériels en métal sont détruits. Détruisez cette carte"
  *      "Camouflage. Révélez cette carte: Redisposez les unités de réserve où vous voulez, face cachée. Détruisez cette carte" 
  *   	
  *   
