@@ -104,7 +104,7 @@ package core
  *   - les actions spéciales sont repérées par un "S" suivi d'un numéro, ex "S1"
  *   - Certaines actions fatiguent le combattant et comportent la mention "Fatigue X" où X est le nombre de points de fatigue à ajouter au compteur courant.
  *   - exemples:
- *   	"S1: Vol. Fatigue 1. Elèvez-vous dans les airs avec un cerf-volant. L'adversaire révéle les cartes de la ligne de réserve"
+ *   	"S1: Vol. Fatigue 1. Le combattant s'élève dans les airs avec un cerf-volant. L'adversaire révéle les cartes de sa ligne de réserve"
  *   	"S1: Ravitaillement. Fatigue 1. Réduisez de 1 la fatigue du combattant devant vous."
  *   	"S2: Soins. Fatigue 1. Réduisez de 2 la fatigue du combattant devant vous."
  *   	"S1: Cannonade. Fatigue 2. Infligez 3 dégats à l'ennemi situé 2 lignes devant vous.
@@ -112,6 +112,19 @@ package core
  *   	"S1: Assassinat. Fatigue 5. Glissez vous sans être repéré dans les lignes ennemis et mettez hors-combat un combattant. Quittez le champ de bataille"  
  *   	"S2: Sabotage. Fatigue 5. Glissez vous sans être repéré dans les lignes ennemis et détruisez un matériel. Quittez le champ de bataille"
  *   	"S1: Réparation. Fatigue 1. Réparez le matériel devant vous: sa fatigue diminue de 1."
+ *      "S1: Renfort. Fatigue 1. Diminuez la fatigue des combattants à droite et à gauche."
+ *      "S1: Sape. Fatigue 3. Creusez un tunnel et détruisez la mine devant vous."
+ *      "S1: Terreur. Fatigue 1. L'unité ennemie devant vous ne peut faire aucune action de combat ou action spéciale jusqu'à la fin du tour. 
+ *      
+ *   Actions automatiques: il s'agit d'action qui ne sont pas déclenchées par le joueur mais par un évènement.
+ *      "Mine. Lorsqu'une unité attaque la mine, elle lui inflige 5 dégats et se détruit en même temps."
+ *      "Lunette. Lorsque l'adversaire pose une unité de réserve en face de la lunette, révélez-là".
+ *            
+ *   Coup-fourrés: 
+ *      "Fumigène. Révèlez cette carte: les unités amies qui parent au combat ne reçoivent pas de blessure ce tour-ci et ne se fatiguent pas. Détruisez cette carte."
+ *      "Incendie. Révèlez cette carte: Les matériels en bois sont détruits. Détruisez cette carte"
+ *      "Foudre. Révèlez cette carte: Les matériels en métal sont détruits. Détruisez cette carte"
+ *      "Camouflage. Révélez cette carte: Redisposez les unités de réserve où vous voulez, face cachée. Détruisez cette carte" 
  *   	
  *   
  * @author Legrand
